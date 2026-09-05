@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dasbor Undangan Pernikahan</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding: 20px 0;
+        }
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .form-section {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .list-section {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-label {
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        .btn-create {
+            margin-top: 20px;
+        }
+        .table-actions {
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container dashboard-container">
+        <h1 class="text-center mb-4">Dasbor Undangan Pernikahan</h1>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="row">
+            <!-- Form Section -->
+            <div class="col-lg-6">
+                <div class="form-section">
+                    <h2 class="mb-4">Buat Undangan Baru</h2>
+                    <form method="POST" action="{{ url_for('create_invitation') }}" enctype="multipart/form-data">
+                        <h4 class="mt-4 mb-3">Informasi Pria</h4>
+                        <div class="mb-3">
+                            <label class="form-label">Nama Lengkap Pria *</label>
+                            <input type="text" class="form-control" name="groom_name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Nama Panggilan Pria *</label>
+                            <input type="text" class="form-control" name="groom_nickname" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Orang Tua Pria *</label>
+                            <input type="text" class="form-control" name="groom_parents" placeholder="Bapak ... dan Ibu ..." required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Instagram Pria</label>
+                            <input type="text" class="form-control" name="groom_instagram" placeholder="@username">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Foto Pria</label>
+                            <input type="file" class="form-control" name="groom_photo" accept="image/*">
+                            <small class="form-text text-muted">Format: JPG, PNG, atau GIF. Maksimal 5MB</small>
+                        </div>
+
+                        <h4 class="mt-4 mb-3">Informasi Wanita</h4>
+                        <div class="mb-3">
+                            <label class="form-label">Nama Lengkap Wanita *</label>
+                            <input type="text" class="form-control" name="bride_name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Nama Panggilan Wanita *</label>
+                            <input type="text" class="form-control" name="bride_nickname" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Orang Tua Wanita *</label>
+                            <input type="text" class="form-control" name="bride_parents" placeholder="Bapak ... dan Ibu ..." required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Instagram Wanita</label>
+                            <input type="text" class="form-control" name="bride_instagram" placeholder="@username">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Foto Wanita</label>
+                            <input type="file" class="form-control" name="bride_photo" accept="image/*">
+                            <small class="form-text text-muted">Format: JPG, PNG, atau GIF. Maksimal 5MB</small>
+                        </div>
+
+                        <h4 class="mt-4 mb-3">Informasi Acara</h4>
+                        <div class="mb-3">
+                            <label class="form-label">Tanggal Acara *</label>
+                            <input type="date" class="form-control" name="event_date" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Waktu Akad *</label>
+                            <input type="text" class="form-control" name="akad_time" placeholder="10.00 - 11.00 WIB" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Waktu Resepsi *</label>
+                            <input type="text" class="form-control" name="resepsi_time" placeholder="19.00 WIB - Selesai" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Nama Lokasi *</label>
+                            <input type="text" class="form-control" name="location_name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Tautan Google Maps</label>
+                            <input type="url" class="form-control" name="location_map_link" placeholder="https://www.google.com/maps/...">
+                        </div>
+
+                        <h4 class="mt-4 mb-3">Informasi Tambahan</h4>
+                        <div class="mb-3">
+                            <label class="form-label">File Musik/Audio</label>
+                            <input type="file" class="form-control" name="music_file" accept="audio/*">
+                            <small class="form-text text-muted">Format: MP3, WAV, atau OGG. Maksimal 10MB</small>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Video Pre-Wedding (YouTube URL)</label>
+                            <input type="url" class="form-control" name="video_url" placeholder="https://www.youtube.com/embed/...">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Informasi Rekening Bank</label>
+                            <textarea class="form-control" name="bank_account" rows="2" placeholder="BCA 12345 a/n Nama"></textarea>
+                        </div>
+
+                        <h4 class="mt-4 mb-3">Cerita Cinta (Story Timeline)</h4>
+                        <div id="story-container">
+                            <div class="story-item mb-3 p-3 border rounded">
+                                <h5>Momen 1</h5>
+                                <div class="mb-2">
+                                    <label class="form-label">Tahun</label>
+                                    <input type="text" class="form-control" name="story_0_year" placeholder="2018">
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label">Judul</label>
+                                    <input type="text" class="form-control" name="story_0_title" placeholder="PERKENALAN">
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label">Foto</label>
+                                    <input type="file" class="form-control" name="story_0_photo" accept="image/*">
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label">Cerita</label>
+                                    <textarea class="form-control" name="story_0_text" rows="3" placeholder="Cerita momen ini..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="hidden" name="story_count" id="story_count" value="1">
+                        <button type="button" class="btn btn-sm btn-secondary mb-3" onclick="addStoryMoment()">+ Tambah Momen</button>
+
+                        <h4 class="mt-4 mb-3">Galeri Foto</h4>
+                        <div class="mb-3">
+                            <label class="form-label">Upload Foto Galeri (Bisa Multiple)</label>
+                            <input type="file" class="form-control" name="gallery_photos" accept="image/*" multiple>
+                            <small class="form-text text-muted">Pilih beberapa foto sekaligus. Format: JPG, PNG, atau GIF</small>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-create w-100">Buat Undangan</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- List Section -->
+            <div class="col-lg-6">
+                <div class="list-section">
+                    <h2 class="mb-4">Semua Undangan</h2>
+                    {% if invitations %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Pasangan</th>
+                                        <th>Tanggal</th>
+                                        <th>Slug</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for invitation in invitations %}
+                                    <tr>
+                                        <td>{{ invitation.groom_nickname }} & {{ invitation.bride_nickname }}</td>
+                                        <td>{{ invitation.event_date.strftime('%Y-%m-%d') }}</td>
+                                        <td><code>{{ invitation.slug }}</code></td>
+                                        <td class="table-actions">
+                                            <a href="{{ url_for('view_invitation', slug=invitation.slug) }}" class="btn btn-sm btn-primary" target="_blank">Lihat</a>
+                                            <form method="POST" action="{{ url_for('delete_invitation', id=invitation.id) }}" style="display: inline;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus undangan ini?');">
+                                                <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted">Belum ada undangan yang dibuat. Buat satu menggunakan formulir di sebelah kiri.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let storyCount = 1;
+        
+        function addStoryMoment() {
+            const container = document.getElementById('story-container');
+            const newItem = document.createElement('div');
+            newItem.className = 'story-item mb-3 p-3 border rounded';
+            newItem.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5>Momen ${storyCount + 1}</h5>
+                    <button type="button" class="btn btn-sm btn-danger" onclick="removeStoryMoment(this)">Hapus</button>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label">Tahun</label>
+                    <input type="text" class="form-control" name="story_${storyCount}_year" placeholder="2018">
+                </div>
+                <div class="mb-2">
+                    <label class="form-label">Judul</label>
+                    <input type="text" class="form-control" name="story_${storyCount}_title" placeholder="PERKENALAN">
+                </div>
+                <div class="mb-2">
+                    <label class="form-label">Foto</label>
+                    <input type="file" class="form-control" name="story_${storyCount}_photo" accept="image/*">
+                </div>
+                <div class="mb-2">
+                    <label class="form-label">Cerita</label>
+                    <textarea class="form-control" name="story_${storyCount}_text" rows="3" placeholder="Cerita momen ini..."></textarea>
+                </div>
+            `;
+            container.appendChild(newItem);
+            storyCount++;
+            document.getElementById('story_count').value = storyCount;
+        }
+        
+        function removeStoryMoment(button) {
+            const item = button.closest('.story-item');
+            item.remove();
+            storyCount--;
+            document.getElementById('story_count').value = storyCount;
+            // Renumber remaining items
+            const items = document.querySelectorAll('.story-item');
+            items.forEach((item, index) => {
+                const title = item.querySelector('h5');
+                if (title) title.textContent = `Momen ${index + 1}`;
+                // Update input names
+                const inputs = item.querySelectorAll('input, textarea');
+                inputs.forEach(input => {
+                    const name = input.getAttribute('name');
+                    if (name && name.startsWith('story_')) {
+                        const newName = name.replace(/story_\d+/, `story_${index}`);
+                        input.setAttribute('name', newName);
+                    }
+                });
+            });
+        }
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,26 @@
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+
+# Media uploads
+media/photos/*.jpg
+media/photos/*.jpeg
+media/photos/*.png
+media/photos/*.gif
+media/photos/*.webp
+
+# Keep the folder structure
+!media/photos/.gitkeep
+
